@@ -1,33 +1,43 @@
 import { useState, useEffect } from 'react';
-import { PlusCircle, Trophy, History, MoreVertical, Trash2 } from 'lucide-react';
+import { PlusCircle, Trophy, History, MoreVertical, Trash2, Users, Plus } from 'lucide-react';
 
 const GameTracker = () => {
-  const [players, setPlayers] = useState(() => {
-    const savedPlayers = localStorage.getItem('vvPlayers');
-    return savedPlayers ? JSON.parse(savedPlayers) : [];
+  const [sessions, setSessions] = useState(() => {
+    const savedSessions = localStorage.getItem('vvSessions');
+    return savedSessions ? JSON.parse(savedSessions) : [{
+      id: 'default',
+      name: 'Default Session',
+      players: [],
+      games: []
+    }];
   });
   
-  const [games, setGames] = useState(() => {
-    const savedGames = localStorage.getItem('vvGames');
-    return savedGames ? JSON.parse(savedGames) : [];
+  const [currentSessionId, setCurrentSessionId] = useState(() => {
+    const saved = localStorage.getItem('vvCurrentSession');
+    return saved || 'default';
   });
-  
+
   const [newPlayer, setNewPlayer] = useState('');
   const [newGame, setNewGame] = useState('');
   const [winner, setWinner] = useState('');
   const [showHistory, setShowHistory] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const [confirmingDelete, setConfirmingDelete] = useState(null);
+  const [showNewSessionForm, setShowNewSessionForm] = useState(false);
+  const [newSessionName, setNewSessionName] = useState('');
+  
+  // Get current session data
+  const currentSession = sessions.find(s => s.id === currentSessionId) || sessions[0];
   
   useEffect(() => {
-    localStorage.setItem('vvPlayers', JSON.stringify(players));
-  }, [players]);
+    localStorage.setItem('vvSessions', JSON.stringify(sessions));
+  }, [sessions]);
   
   useEffect(() => {
-    localStorage.setItem('vvGames', JSON.stringify(games));
-  }, [games]);
+    localStorage.setItem('vvCurrentSession', currentSessionId);
+  }, [currentSessionId]);
 
-  // Close dropdown when clicking outside
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (!event.target.closest('.dropdown-container')) {
@@ -39,26 +49,66 @@ const GameTracker = () => {
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
+
+  const createNewSession = (e) => {
+    e.preventDefault();
+    if (newSessionName.trim()) {
+      const newSession = {
+        id: Date.now().toString(),
+        name: newSessionName.trim(),
+        players: [],
+        games: []
+      };
+      setSessions([...sessions, newSession]);
+      setCurrentSessionId(newSession.id);
+      setNewSessionName('');
+      setShowNewSessionForm(false);
+    }
+  };
+
+  const deleteSession = (sessionId) => {
+    if (sessions.length > 1) {
+      const newSessions = sessions.filter(s => s.id !== sessionId);
+      setSessions(newSessions);
+      if (currentSessionId === sessionId) {
+        setCurrentSessionId(newSessions[0].id);
+      }
+    }
+  };
   
   const addPlayer = (e) => {
     e.preventDefault();
-    if (newPlayer.trim() && !players.includes(newPlayer.trim())) {
-      setPlayers([...players, newPlayer.trim()]);
+    if (newPlayer.trim() && !currentSession.players.includes(newPlayer.trim())) {
+      const updatedSessions = sessions.map(session => {
+        if (session.id === currentSessionId) {
+          return {
+            ...session,
+            players: [...session.players, newPlayer.trim()]
+          };
+        }
+        return session;
+      });
+      setSessions(updatedSessions);
       setNewPlayer('');
     }
   };
 
   const removePlayer = (playerToRemove) => {
-    const updatedGames = games.filter(game => game.winner !== playerToRemove);
-    const updatedPlayers = players.filter(player => player !== playerToRemove);
+    const updatedSessions = sessions.map(session => {
+      if (session.id === currentSessionId) {
+        return {
+          ...session,
+          players: session.players.filter(player => player !== playerToRemove),
+          games: session.games.filter(game => game.winner !== playerToRemove)
+        };
+      }
+      return session;
+    });
     
-    setGames(updatedGames);
-    setPlayers(updatedPlayers);
-    
+    setSessions(updatedSessions);
     if (winner === playerToRemove) {
       setWinner('');
     }
-    
     setOpenDropdown(null);
     setConfirmingDelete(null);
   };
@@ -71,14 +121,25 @@ const GameTracker = () => {
         winner,
         date: new Date().toLocaleDateString()
       };
-      setGames([gameRecord, ...games]);
+      
+      const updatedSessions = sessions.map(session => {
+        if (session.id === currentSessionId) {
+          return {
+            ...session,
+            games: [gameRecord, ...session.games]
+          };
+        }
+        return session;
+      });
+      
+      setSessions(updatedSessions);
       setNewGame('');
       setWinner('');
     }
   };
   
   const getPlayerStats = (playerName) => {
-    const wins = games.filter(game => game.winner === playerName).length;
+    const wins = currentSession.games.filter(game => game.winner === playerName).length;
     return { wins };
   };
 
@@ -97,9 +158,67 @@ const GameTracker = () => {
     <div className="max-w-2xl mx-auto p-4 space-y-6">
       <h1 className="text-3xl font-bold text-center mb-8">VV Family Game Tracker</h1>
       
+      {/* Session Selector */}
+      <div className="bg-white p-6 rounded-lg shadow">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold">Game Sessions</h2>
+          <button
+            onClick={() => setShowNewSessionForm(!showNewSessionForm)}
+            className="text-blue-500 hover:text-blue-600 flex items-center gap-2"
+          >
+            <Plus size={20} />
+            New Session
+          </button>
+        </div>
+        
+        {showNewSessionForm && (
+          <form onSubmit={createNewSession} className="mb-4 flex gap-2">
+            <input
+              type="text"
+              value={newSessionName}
+              onChange={(e) => setNewSessionName(e.target.value)}
+              placeholder="Enter session name"
+              className="flex-1 p-2 border rounded"
+            />
+            <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded flex items-center gap-2">
+              <PlusCircle size={20} />
+              Create
+            </button>
+          </form>
+        )}
+        
+        <div className="flex gap-2 flex-wrap">
+          {sessions.map(session => (
+            <button
+              key={session.id}
+              onClick={() => setCurrentSessionId(session.id)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-full border ${
+                currentSessionId === session.id
+                  ? 'bg-blue-500 text-white border-blue-500'
+                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+              }`}
+            >
+              <Users size={16} />
+              {session.name}
+              {sessions.length > 1 && currentSessionId === session.id && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    deleteSession(session.id);
+                  }}
+                  className="ml-2 text-white hover:text-red-200"
+                >
+                  <Trash2 size={14} />
+                </button>
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+      
       {/* Add Player Form */}
       <div className="bg-white p-6 rounded-lg shadow">
-        <h2 className="text-xl font-semibold mb-4">Add New Player</h2>
+        <h2 className="text-xl font-semibold mb-4">Add New Player to {currentSession.name}</h2>
         <form onSubmit={addPlayer} className="flex gap-2">
           <input
             type="text"
@@ -132,7 +251,7 @@ const GameTracker = () => {
             className="w-full p-2 border rounded"
           >
             <option value="">Select winner</option>
-            {players.map(player => (
+            {currentSession.players.map(player => (
               <option key={player} value={player}>{player}</option>
             ))}
           </select>
@@ -148,9 +267,9 @@ const GameTracker = () => {
       
       {/* Player Stats */}
       <div className="bg-white p-6 rounded-lg shadow">
-        <h2 className="text-xl font-semibold mb-4">Player Rankings</h2>
+        <h2 className="text-xl font-semibold mb-4">Player Rankings - {currentSession.name}</h2>
         <div className="space-y-2">
-          {players
+          {currentSession.players
             .sort((a, b) => getPlayerStats(b).wins - getPlayerStats(a).wins)
             .map(player => {
               const { wins } = getPlayerStats(player);
@@ -217,7 +336,7 @@ const GameTracker = () => {
       {/* Game History */}
       <div className="bg-white p-6 rounded-lg shadow">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Game History</h2>
+          <h2 className="text-xl font-semibold">Game History - {currentSession.name}</h2>
           <button
             onClick={() => setShowHistory(!showHistory)}
             className="text-blue-500 flex items-center gap-2"
@@ -228,7 +347,7 @@ const GameTracker = () => {
         </div>
         {showHistory && (
           <div className="space-y-2">
-            {games.map((game, index) => (
+            {currentSession.games.map((game, index) => (
               <div key={index} className="p-2 bg-gray-50 rounded flex justify-between">
                 <div>
                   <span className="font-semibold">{game.game}</span>
