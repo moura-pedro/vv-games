@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { PlusCircle, Trophy, History } from 'lucide-react';
+import { PlusCircle, Trophy, History, MoreVertical, Trash2 } from 'lucide-react';
 
 const GameTracker = () => {
   const [players, setPlayers] = useState(() => {
@@ -16,6 +16,8 @@ const GameTracker = () => {
   const [newGame, setNewGame] = useState('');
   const [winner, setWinner] = useState('');
   const [showHistory, setShowHistory] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const [confirmingDelete, setConfirmingDelete] = useState(null);
   
   useEffect(() => {
     localStorage.setItem('vvPlayers', JSON.stringify(players));
@@ -24,6 +26,19 @@ const GameTracker = () => {
   useEffect(() => {
     localStorage.setItem('vvGames', JSON.stringify(games));
   }, [games]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.dropdown-container')) {
+        setOpenDropdown(null);
+        setConfirmingDelete(null);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
   
   const addPlayer = (e) => {
     e.preventDefault();
@@ -31,6 +46,21 @@ const GameTracker = () => {
       setPlayers([...players, newPlayer.trim()]);
       setNewPlayer('');
     }
+  };
+
+  const removePlayer = (playerToRemove) => {
+    const updatedGames = games.filter(game => game.winner !== playerToRemove);
+    const updatedPlayers = players.filter(player => player !== playerToRemove);
+    
+    setGames(updatedGames);
+    setPlayers(updatedPlayers);
+    
+    if (winner === playerToRemove) {
+      setWinner('');
+    }
+    
+    setOpenDropdown(null);
+    setConfirmingDelete(null);
   };
   
   const recordGame = (e) => {
@@ -50,6 +80,17 @@ const GameTracker = () => {
   const getPlayerStats = (playerName) => {
     const wins = games.filter(game => game.winner === playerName).length;
     return { wins };
+  };
+
+  const toggleDropdown = (e, player) => {
+    e.stopPropagation();
+    setOpenDropdown(openDropdown === player ? null : player);
+    setConfirmingDelete(null);
+  };
+
+  const handleDeleteClick = (e, player) => {
+    e.stopPropagation();
+    setConfirmingDelete(player);
   };
 
   return (
@@ -116,7 +157,57 @@ const GameTracker = () => {
               return (
                 <div key={player} className="flex justify-between items-center p-2 bg-gray-50 rounded">
                   <span>{player}</span>
-                  <span className="font-semibold">{wins} wins</span>
+                  <div className="flex items-center gap-4">
+                    <span className="font-semibold">{wins} wins</span>
+                    <div className="dropdown-container relative">
+                      <button
+                        onClick={(e) => toggleDropdown(e, player)}
+                        className="text-gray-500 hover:text-gray-700 transition-colors p-1"
+                      >
+                        <MoreVertical size={20} />
+                      </button>
+                      
+                      {/* Dropdown Menu */}
+                      {openDropdown === player && (
+                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border">
+                          {confirmingDelete === player ? (
+                            <div className="p-3 space-y-2">
+                              <p className="text-sm text-gray-600">Remove this player?</p>
+                              <div className="flex justify-end gap-2">
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setConfirmingDelete(null);
+                                  }}
+                                  className="px-3 py-1 text-sm text-gray-600 hover:bg-gray-100 rounded"
+                                >
+                                  Cancel
+                                </button>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    removePlayer(player);
+                                  }}
+                                  className="px-3 py-1 text-sm text-white bg-red-500 hover:bg-red-600 rounded flex items-center gap-1"
+                                >
+                                  <Trash2 size={14} />
+                                  Remove
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <button
+                              onClick={(e) => handleDeleteClick(e, player)}
+                              className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                            >
+                              <Trash2 size={14} />
+                              Remove Player
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
               );
             })}
