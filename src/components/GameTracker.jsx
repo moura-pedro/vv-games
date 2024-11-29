@@ -1,22 +1,10 @@
 import { useState, useEffect } from 'react';
 import { PlusCircle, Trophy, History, MoreVertical, Trash2, Users, Plus } from 'lucide-react';
+import { api } from '../services/api';
 
 const GameTracker = () => {
-  const [sessions, setSessions] = useState(() => {
-    const savedSessions = localStorage.getItem('vvSessions');
-    return savedSessions ? JSON.parse(savedSessions) : [{
-      id: 'default',
-      name: 'Default Session',
-      players: [],
-      games: []
-    }];
-  });
-  
-  const [currentSessionId, setCurrentSessionId] = useState(() => {
-    const saved = localStorage.getItem('vvCurrentSession');
-    return saved || 'default';
-  });
-
+  const [sessions, setSessions] = useState([]);
+  const [currentSessionId, setCurrentSessionId] = useState('default');
   const [newPlayer, setNewPlayer] = useState('');
   const [newGame, setNewGame] = useState('');
   const [winner, setWinner] = useState('');
@@ -25,17 +13,11 @@ const GameTracker = () => {
   const [confirmingDelete, setConfirmingDelete] = useState(null);
   const [showNewSessionForm, setShowNewSessionForm] = useState(false);
   const [newSessionName, setNewSessionName] = useState('');
-  
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   // Get current session data
   const currentSession = sessions.find(s => s.id === currentSessionId) || sessions[0];
-  
-  useEffect(() => {
-    localStorage.setItem('vvSessions', JSON.stringify(sessions));
-  }, [sessions]);
-  
-  useEffect(() => {
-    localStorage.setItem('vvCurrentSession', currentSessionId);
-  }, [currentSessionId]);
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -50,94 +32,139 @@ const GameTracker = () => {
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
-  const createNewSession = (e) => {
+  // Initial data fetch
+  useEffect(() => {
+    const fetchSessions = async () => {
+      try {
+        setLoading(true);
+        const data = await api.fetchSessions();
+        if (data.length === 0) {
+          // Create default session if none exists
+          const defaultSession = {
+            id: 'default',
+            name: 'Default Session',
+            players: [],
+            games: []
+          };
+          await api.createSession(defaultSession);
+          setSessions([defaultSession]);
+        } else {
+          setSessions(data);
+          setCurrentSessionId(data[0].id);
+        }
+      } catch (err) {
+        setError('Failed to load sessions. Please try again.');
+        console.error('Error:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSessions();
+  }, []);
+
+  const createNewSession = async (e) => {
     e.preventDefault();
     if (newSessionName.trim()) {
-      const newSession = {
-        id: Date.now().toString(),
-        name: newSessionName.trim(),
-        players: [],
-        games: []
-      };
-      setSessions([...sessions, newSession]);
-      setCurrentSessionId(newSession.id);
-      setNewSessionName('');
-      setShowNewSessionForm(false);
-    }
-  };
-
-  const deleteSession = (sessionId) => {
-    if (sessions.length > 1) {
-      const newSessions = sessions.filter(s => s.id !== sessionId);
-      setSessions(newSessions);
-      if (currentSessionId === sessionId) {
-        setCurrentSessionId(newSessions[0].id);
+      try {
+        const newSession = {
+          id: Date.now().toString(),
+          name: newSessionName.trim(),
+          players: [],
+          games: []
+        };
+        const created = await api.createSession(newSession);
+        setSessions([...sessions, created]);
+        setCurrentSessionId(created.id);
+        setNewSessionName('');
+        setShowNewSessionForm(false);
+      } catch (err) {
+        setError('Failed to create session. Please try again.');
+        console.error('Error:', err);
       }
     }
   };
-  
-  const addPlayer = (e) => {
+
+  const deleteSession = async (sessionId) => {
+    if (sessions.length > 1) {
+      try {
+        await api.deleteSession(sessionId);
+        const newSessions = sessions.filter(s => s.id !== sessionId);
+        setSessions(newSessions);
+        if (currentSessionId === sessionId) {
+          setCurrentSessionId(newSessions[0].id);
+        }
+      } catch (err) {
+        setError('Failed to delete session. Please try again.');
+        console.error('Error:', err);
+      }
+    }
+  };
+
+  const addPlayer = async (e) => {
     e.preventDefault();
     if (newPlayer.trim() && !currentSession.players.includes(newPlayer.trim())) {
-      const updatedSessions = sessions.map(session => {
-        if (session.id === currentSessionId) {
-          return {
-            ...session,
-            players: [...session.players, newPlayer.trim()]
-          };
-        }
-        return session;
-      });
-      setSessions(updatedSessions);
-      setNewPlayer('');
+      try {
+        const updatedSession = {
+          ...currentSession,
+          players: [...currentSession.players, newPlayer.trim()]
+        };
+        const updated = await api.updateSession(updatedSession);
+        setSessions(sessions.map(s => s.id === currentSessionId ? updated : s));
+        setNewPlayer('');
+      } catch (err) {
+        setError('Failed to add player. Please try again.');
+        console.error('Error:', err);
+      }
     }
   };
 
-  const removePlayer = (playerToRemove) => {
-    const updatedSessions = sessions.map(session => {
-      if (session.id === currentSessionId) {
-        return {
-          ...session,
-          players: session.players.filter(player => player !== playerToRemove),
-          games: session.games.filter(game => game.winner !== playerToRemove)
-        };
+  const removePlayer = async (playerToRemove) => {
+    try {
+      const updatedSession = {
+        ...currentSession,
+        players: currentSession.players.filter(player => player !== playerToRemove),
+        games: currentSession.games.filter(game => game.winner !== playerToRemove)
+      };
+      const updated = await api.updateSession(updatedSession);
+      setSessions(sessions.map(s => s.id === currentSessionId ? updated : s));
+      if (winner === playerToRemove) {
+        setWinner('');
       }
-      return session;
-    });
-    
-    setSessions(updatedSessions);
-    if (winner === playerToRemove) {
-      setWinner('');
+      setOpenDropdown(null);
+      setConfirmingDelete(null);
+    } catch (err) {
+      setError('Failed to remove player. Please try again.');
+      console.error('Error:', err);
     }
-    setOpenDropdown(null);
-    setConfirmingDelete(null);
   };
-  
-  const recordGame = (e) => {
+
+  const recordGame = async (e) => {
     e.preventDefault();
     if (newGame.trim() && winner) {
-      const gameRecord = {
-        game: newGame.trim(),
-        winner,
-        date: new Date().toLocaleDateString()
-      };
-      
-      const updatedSessions = sessions.map(session => {
-        if (session.id === currentSessionId) {
-          return {
-            ...session,
-            games: [gameRecord, ...session.games]
-          };
-        }
-        return session;
-      });
-      
-      setSessions(updatedSessions);
-      setNewGame('');
-      setWinner('');
+      try {
+        const gameRecord = {
+          game: newGame.trim(),
+          winner,
+          date: new Date().toLocaleDateString()
+        };
+        
+        const updatedSession = {
+          ...currentSession,
+          games: [gameRecord, ...currentSession.games]
+        };
+        
+        const updated = await api.updateSession(updatedSession);
+        setSessions(sessions.map(s => s.id === currentSessionId ? updated : s));
+        setNewGame('');
+        setWinner('');
+      } catch (err) {
+        setError('Failed to record game. Please try again.');
+        console.error('Error:', err);
+      }
     }
   };
-  
+
   const getPlayerStats = (playerName) => {
     const wins = currentSession.games.filter(game => game.winner === playerName).length;
     return { wins };
@@ -153,6 +180,30 @@ const GameTracker = () => {
     e.stopPropagation();
     setConfirmingDelete(player);
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-xl text-gray-600">Loading...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-xl text-red-600 p-4 bg-red-100 rounded-lg">
+          {error}
+          <button 
+            onClick={() => setError(null)}
+            className="ml-4 text-sm underline hover:no-underline"
+          >
+            Dismiss
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-2xl mx-auto p-4 space-y-6">
@@ -356,6 +407,11 @@ const GameTracker = () => {
                 <span className="text-gray-500">{game.date}</span>
               </div>
             ))}
+            {currentSession.games.length === 0 && (
+              <div className="text-gray-500 text-center py-4">
+                No games recorded yet
+              </div>
+            )}
           </div>
         )}
       </div>
