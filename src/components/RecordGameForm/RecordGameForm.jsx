@@ -54,12 +54,6 @@ const RecordGameForm = ({
     }
   };
 
-  const clearForm = () => {
-    setNewGame('');
-    setWinner('');
-    setError(null);
-  };
-
   return (
     <div className="record-game-form">
       <div className="form-header">
@@ -122,30 +116,20 @@ const RecordGameForm = ({
 
         {error && <div className="error-message">{error}</div>}
 
-        <div className="form-actions">
-          <button
-            type="button"
-            onClick={clearForm}
-            className="clear-form-button"
-            disabled={isSubmitting || (!newGame && !winner)}
-          >
-            Clear Form
-          </button>
-          <button
-            type="submit"
-            className="submit-button"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <span className="loading-text">Recording...</span>
-            ) : (
-              <>
-                <Save size={20} />
-                Record Game
-              </>
-            )}
-          </button>
-        </div>
+        <button
+          type="submit"
+          className="submit-button"
+          disabled={isSubmitting || !newGame.trim() || !winner}
+        >
+          {isSubmitting ? (
+            <span className="loading-text">Recording...</span>
+          ) : (
+            <>
+              <Save size={20} />
+              Record Game
+            </>
+          )}
+        </button>
       </form>
     </div>
   );

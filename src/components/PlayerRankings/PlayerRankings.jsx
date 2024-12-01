@@ -1,6 +1,5 @@
-// src/components/GameTracker/PlayerRankings/PlayerRankings.jsx
 import React, { useMemo, useState } from 'react';
-import { Trophy, Crown, Award, Medal, Star, TrendingUp, Percent, Trash2, AlertCircle } from 'lucide-react';
+import { Trophy, Crown, Award, Medal, Star, TrendingUp, Percent, Trash2, AlertCircle, Hash } from 'lucide-react';
 import { api } from '../../services/api';
 import './PlayerRankings.css';
 
@@ -18,16 +17,12 @@ const PlayerRankings = ({ currentSession, sessions, setSessions, currentSessionI
         game.winner === player
       ).length;
       const winRate = totalGames > 0 ? (wins / totalGames) * 100 : 0;
-      const recentGames = currentSession.games
-        .slice(0, 5)
-        .filter(game => game.winner === player).length;
       
       return {
         name: player,
         wins,
         totalGames,
         winRate,
-        recentForm: recentGames,
       };
     }).sort((a, b) => b.wins - a.wins || b.winRate - a.winRate);
 
@@ -37,32 +32,6 @@ const PlayerRankings = ({ currentSession, sessions, setSessions, currentSessionI
       medal: index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : null
     }));
   }, [currentSession]);
-
-  const removePlayer = async (playerToRemove) => {
-    if (confirmDelete !== playerToRemove) {
-      setConfirmDelete(playerToRemove);
-      setTimeout(() => setConfirmDelete(null), 3000);
-      return;
-    }
-
-    setDeletingPlayer(playerToRemove);
-    setError(null);
-    try {
-      const updatedSession = {
-        ...currentSession,
-        players: currentSession.players.filter(player => player !== playerToRemove),
-        games: currentSession.games.filter(game => game.winner !== playerToRemove)
-      };
-      
-      const updated = await api.updateSession(updatedSession);
-      setSessions(sessions.map(s => s.id === currentSessionId ? updated : s));
-      setConfirmDelete(null);
-    } catch (err) {
-      setError(`Failed to remove ${playerToRemove}`);
-    } finally {
-      setDeletingPlayer(null);
-    }
-  };
 
   const getMedalIcon = (medal, size = 24) => {
     switch (medal) {
@@ -76,16 +45,6 @@ const PlayerRankings = ({ currentSession, sessions, setSessions, currentSessionI
         return <Star size={size} className="text-white/40" />;
     }
   };
-
-  const getFormColor = (recentForm) => {
-    if (recentForm >= 4) return 'bg-green-500';
-    if (recentForm >= 2) return 'bg-yellow-500';
-    return 'bg-red-500';
-  };
-
-  if (error) {
-    setTimeout(() => setError(null), 5000);
-  }
 
   return (
     <div className="player-rankings">
@@ -141,26 +100,11 @@ const PlayerRankings = ({ currentSession, sessions, setSessions, currentSessionI
                     <span>{player.winRate.toFixed(1)}%</span>
                   </div>
                   <div className="stat-item">
-                    <TrendingUp size={14} />
-                    <div className={`form-indicator ${getFormColor(player.recentForm)}`}>
-                      {player.recentForm}/5
-                    </div>
+                    <Hash size={14} />
+                    <span>{player.totalGames} games</span>
                   </div>
                 </div>
               </div>
-
-              <button
-                onClick={() => removePlayer(player.name)}
-                disabled={deletingPlayer === player.name}
-                className={`remove-player-button ${
-                  confirmDelete === player.name ? 'confirming' : ''
-                }`}
-              >
-                <Trash2 size={16} />
-                {confirmDelete === player.name && (
-                  <span className="delete-confirm">Click to confirm</span>
-                )}
-              </button>
             </div>
           ))}
         </div>
