@@ -1,0 +1,138 @@
+/* src/components/GameTracker/PlayerRankings/PlayerRankings.css */
+.player-rankings {
+  @apply bg-white/10 backdrop-blur-sm rounded-xl p-6 space-y-6;
+}
+
+.rankings-header {
+  @apply flex items-center gap-3 mb-6;
+}
+
+.header-icon {
+  @apply text-white/80;
+}
+
+.header-title {
+  @apply text-xl font-semibold text-white;
+}
+
+.error-banner {
+  @apply flex items-center gap-2 text-red-300 text-sm bg-red-500/10 
+    px-4 py-2 rounded-lg mb-4;
+}
+
+.stats-grid {
+  @apply grid grid-cols-2 gap-4 mb-6;
+}
+
+.stats-card {
+  @apply flex items-center gap-3 p-4 rounded-lg bg-white/5 hover:bg-white/10 
+    transition-colors;
+}
+
+.stats-icon {
+  @apply text-2xl;
+}
+
+.stats-info {
+  @apply flex flex-col;
+}
+
+.stats-value {
+  @apply text-2xl font-bold text-white;
+}
+
+.stats-label {
+  @apply text-sm text-white/60;
+}
+
+.rankings-list {
+  @apply space-y-3;
+}
+
+.player-card {
+  @apply flex items-center gap-4 p-4 rounded-lg bg-white/5 hover:bg-white/10 
+    transition-all hover:translate-x-1;
+}
+
+.rank-section {
+  @apply flex flex-col items-center min-w-[3rem];
+}
+
+.rank-number {
+  @apply text-2xl font-bold text-white/80;
+}
+
+.medal-icon {
+  @apply mt-1;
+}
+
+.player-info {
+  @apply flex-1;
+}
+
+.player-name {
+  @apply text-lg font-semibold text-white mb-1;
+}
+
+.player-stats {
+  @apply flex flex-wrap items-center gap-4;
+}
+
+.stat-item {
+  @apply flex items-center gap-1.5 text-sm text-white/60;
+}
+
+.form-indicator {
+  @apply px-2 py-0.5 rounded-full text-xs text-white font-medium;
+}
+
+.remove-player-button {
+  @apply text-white/40 hover:text-red-400 p-2 rounded-full 
+    hover:bg-white/10 transition-colors relative
+    disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.remove-player-button.confirming {
+  @apply text-red-400 animate-pulse;
+}
+
+.delete-confirm {
+  @apply absolute left-1/2 -translate-x-1/2 whitespace-nowrap
+    bg-red-500 text-white text-xs px-2 py-1 rounded-md -bottom-8
+    opacity-0 transition-opacity duration-200;
+}
+
+.confirming .delete-confirm {
+  @apply opacity-100;
+}
+
+.empty-rankings {
+  @apply text-center py-8 text-white/60;
+}
+
+.empty-subtitle {
+  @apply text-sm mt-2 text-white/40;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .player-stats {
+    @apply flex-col items-start gap-2;
+  }
+  
+  .stat-item {
+    @apply text-xs;
+  }
+
+  .player-card {
+    @apply p-3;
+  }
+
+  .rank-section {
+    @apply min-w-[2.5rem];
+  }
+
+  .rank-number {
+    @apply text-xl;
+  }
+}

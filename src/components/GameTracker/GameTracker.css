@@ -1,0 +1,26 @@
+.game-tracker {
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #9333ea, #4f46e5);
+  }
+  
+  .main-content {
+    max-width: 32rem;
+    margin: 0 auto;
+    padding: 0 1rem 6rem;
+  }
+  
+  .loading-screen {
+    @apply flex justify-center items-center min-h-screen bg-gradient-to-b from-purple-500 to-indigo-600;
+  }
+  
+  .loading-text {
+    @apply text-xl text-white;
+  }
+  
+  .error-screen {
+    @apply flex justify-center items-center min-h-screen bg-gradient-to-b from-red-500 to-red-600;
+  }
+  
+  .error-container {
+    @apply text-xl text-white p-4 rounded-lg;
+  }

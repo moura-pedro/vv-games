@@ -1,0 +1,116 @@
+.game-history {
+    @apply bg-white/10 backdrop-blur-sm rounded-xl p-6 space-y-6;
+  }
+  
+  .history-header {
+    @apply space-y-4;
+  }
+  
+  .header-title {
+    @apply flex items-center gap-3;
+  }
+  
+  .header-icon {
+    @apply text-white/80;
+  }
+  
+  .title-text {
+    @apply text-xl font-semibold text-white;
+  }
+  
+  .search-container {
+    @apply flex gap-2;
+  }
+  
+  .search-wrapper {
+    @apply flex-1 relative;
+  }
+  
+  .search-icon {
+    @apply absolute left-3 top-1/2 -translate-y-1/2 text-white/40;
+  }
+  
+  .search-input {
+    @apply w-full pl-10 pr-8 py-2 rounded-lg bg-white/10 text-white 
+      placeholder-white/40 border border-white/20 focus:outline-none 
+      focus:border-white transition-colors;
+  }
+  
+  .clear-search {
+    @apply absolute right-3 top-1/2 -translate-y-1/2 text-white/40 
+      hover:text-white/60 p-1 rounded-full hover:bg-white/10 transition-colors;
+  }
+  
+  .filter-dropdown {
+    @apply relative;
+  }
+  
+  .filter-icon {
+    @apply absolute left-3 top-1/2 -translate-y-1/2 text-white/40;
+  }
+  
+  .filter-select {
+    @apply pl-10 pr-4 py-2 rounded-lg bg-white/10 text-white border 
+      border-white/20 focus:outline-none focus:border-white transition-colors 
+      appearance-none cursor-pointer;
+  }
+  
+  .filter-suggestions {
+    @apply flex flex-wrap gap-2 mt-2;
+  }
+  
+  .suggestion-chip {
+    @apply px-3 py-1 rounded-full bg-white/20 text-white text-sm 
+      hover:bg-white/30 transition-colors;
+  }
+  
+  .history-content {
+    @apply space-y-6;
+  }
+  
+  .date-group {
+    @apply space-y-2;
+  }
+  
+  .date-header {
+    @apply flex items-center gap-2 text-white/60 text-sm;
+  }
+  
+  .games-list {
+    @apply space-y-2;
+  }
+  
+  .game-card {
+    @apply bg-white/5 rounded-lg p-4 hover:bg-white/10 transition-colors;
+  }
+  
+  .game-info {
+    @apply flex justify-between items-center;
+  }
+  
+  .game-name {
+    @apply text-white font-medium;
+  }
+  
+  .winner-info {
+    @apply flex items-center gap-2 text-white/80;
+  }
+  
+  .winner-icon {
+    @apply text-yellow-400;
+  }
+  
+  .winner-name {
+    @apply text-sm;
+  }
+  
+  .empty-state {
+    @apply text-center py-8 text-white/60;
+  }
+  
+  /* Add smooth scrolling for iOS */
+  @supports (-webkit-touch-callout: none) {
+    .history-content {
+      -webkit-overflow-scrolling: touch;
+    }
+  }

@@ -1,8 +1,21 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/vv-games/'
+  base: '/vv-games/',
+  server: {
+    host: true, // Needed for mobile development
+  },
+  build: {
+    target: 'esnext',
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor': ['react', 'react-dom'],
+        }
+      }
+    }
+  }
 })
