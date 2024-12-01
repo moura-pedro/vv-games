@@ -1,0 +1,81 @@
+.add-player-form {
+    @apply bg-white/10 backdrop-blur-sm rounded-xl p-6 space-y-6;
+  }
+  
+  .form-header {
+    @apply flex items-center gap-3 mb-6;
+  }
+  
+  .form-icon {
+    @apply text-white/80;
+  }
+  
+  .form-title {
+    @apply text-xl font-semibold text-white;
+  }
+  
+  .form-content {
+    @apply space-y-6;
+  }
+  
+  .form-group {
+    @apply space-y-2;
+  }
+  
+  .form-label {
+    @apply block text-sm font-medium text-white/80;
+  }
+  
+  .input-wrapper {
+    @apply relative;
+  }
+  
+  .form-input {
+    @apply w-full px-4 py-3 rounded-lg bg-white/10 text-white placeholder-white/40
+      border border-white/20 focus:outline-none focus:border-white transition-colors;
+  }
+  
+  .clear-button {
+    @apply absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/60
+      p-1 rounded-full hover:bg-white/10 transition-colors;
+  }
+  
+  .error-message {
+    @apply flex items-center gap-2 text-red-300 text-sm bg-red-500/10 
+      px-4 py-2 rounded-lg;
+  }
+  
+  .success-message {
+    @apply bg-green-500/20 text-green-300 px-4 py-2 rounded-lg text-center;
+  }
+  
+  .current-players {
+    @apply space-y-3;
+  }
+  
+  .current-players-title {
+    @apply text-sm font-medium text-white/80;
+  }
+  
+  .players-list {
+    @apply flex flex-wrap gap-2;
+  }
+  
+  .player-tag {
+    @apply px-3 py-1 rounded-full bg-white/20 text-white text-sm
+      border border-white/10;
+  }
+  
+  .no-players {
+    @apply text-white/40 text-sm;
+  }
+  
+  .submit-button {
+    @apply w-full py-3 bg-white text-purple-600 rounded-lg font-semibold
+      hover:bg-white/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed
+      flex items-center justify-center gap-2;
+  }
+  
+  .loading-text {
+    @apply animate-pulse;
+  }

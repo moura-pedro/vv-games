@@ -1,0 +1,68 @@
+/* src/components/GameTracker/SessionSelector/SessionSelector.css */
+.session-selector {
+  @apply max-w-lg mx-auto px-4 py-2;
+}
+
+.session-list {
+  @apply flex gap-2 overflow-x-auto pb-2;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.session-list::-webkit-scrollbar {
+  display: none;
+}
+
+.session-button {
+  @apply flex items-center gap-2 px-4 py-2 rounded-full border backdrop-blur-sm transition-all
+    bg-white/10 text-white border-white/20 hover:bg-white/20;
+}
+
+.session-button.active {
+  @apply bg-white text-purple-600 border-white;
+}
+
+.delete-button {
+  @apply ml-2 text-white/60 hover:text-red-400 transition-colors relative
+    disabled:opacity-50 disabled:cursor-not-allowed p-1 rounded-full hover:bg-white/10;
+}
+
+.delete-button.confirming {
+  @apply text-red-400 animate-pulse;
+}
+
+.active .delete-button {
+  @apply text-purple-400 hover:text-red-400;
+}
+
+.delete-confirm {
+  @apply absolute left-1/2 -translate-x-1/2 whitespace-nowrap
+    bg-red-500 text-white text-xs px-2 py-1 rounded-md -bottom-8
+    opacity-0 transition-opacity duration-200;
+}
+
+.confirming .delete-confirm {
+  @apply opacity-100;
+}
+
+.new-session-form {
+  @apply mt-4;
+}
+
+.form-content {
+  @apply flex gap-2;
+}
+
+.session-input {
+  @apply flex-1 px-4 py-2 rounded-full bg-white/10 text-white placeholder-white/60 
+    border border-white/20 focus:outline-none focus:border-white transition-colors;
+}
+
+.submit-button {
+  @apply p-2 bg-white text-purple-600 rounded-full hover:bg-white/90 transition-colors
+    disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.error-message {
+  @apply mt-2 text-sm text-red-300 text-center;
+}
