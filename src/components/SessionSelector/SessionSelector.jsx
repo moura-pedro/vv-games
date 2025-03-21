@@ -16,6 +16,20 @@ const SessionSelector = ({
   const [error, setError] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
+  const [isRetrying, setIsRetrying] = useState(false);
+
+  const handleRetry = async () => {
+    setIsRetrying(true);
+    setError(null);
+    try {
+      const fetchedSessions = await api.getSessions();
+      setSessions(fetchedSessions);
+    } catch (err) {
+      setError('Failed to load sessions. Click to retry.');
+    } finally {
+      setIsRetrying(false);
+    }
+  };
 
   const createNewSession = async (e) => {
     e.preventDefault();
@@ -82,56 +96,71 @@ const SessionSelector = ({
 
   return (
     <div className="session-selector">
-      <div className="session-list">
-        {sessions.map(session => (
-          <button
-            key={session.id}
-            onClick={() => setCurrentSessionId(session.id)}
-            className={`session-button ${
-              currentSessionId === session.id ? 'active' : ''
-            }`}
-          >
-            <Users size={16} />
-            <span>{session.name}</span>
-            {sessions.length > 1 && (
-              <button
-                onClick={(e) => deleteSession(e, session.id)}
-                className={`delete-button ${
-                  deleteConfirmId === session.id ? 'confirming' : ''
-                }`}
-                disabled={isDeleting}
-              >
-                <Trash2 size={14} />
-                {deleteConfirmId === session.id && (
-                  <span className="delete-confirm">Click to confirm</span>
-                )}
-              </button>
-            )}
-          </button>
-        ))}
-      </div>
-
-      {showNewSessionForm && (
-        <form onSubmit={createNewSession} className="new-session-form">
-          <div className="form-content">
-            <input
-              type="text"
-              value={newSessionName}
-              onChange={(e) => setNewSessionName(e.target.value)}
-              placeholder="New session name"
-              className="session-input"
-              maxLength={30}
-            />
-            <button 
-              type="submit" 
-              className="submit-button"
-              disabled={!newSessionName.trim()}
-            >
-              <Plus size={24} />
-            </button>
+      {error ? (
+        <button 
+          onClick={handleRetry} 
+          className="error-message" 
+          disabled={isRetrying}
+        >
+          {error}
+          {isRetrying && ' ...'}
+        </button>
+      ) : (
+        <>
+          <div className="session-list">
+            {[...sessions]
+              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+              .map(session => (
+                <button
+                  key={session.id}
+                  onClick={() => setCurrentSessionId(session.id)}
+                  className={`session-button ${
+                    currentSessionId === session.id ? 'active' : ''
+                  }`}
+                >
+                  <Users size={16} />
+                  <span>{session.name}</span>
+                  {sessions.length > 1 && (
+                    <button
+                      onClick={(e) => deleteSession(e, session.id)}
+                      className={`delete-button ${
+                        deleteConfirmId === session.id ? 'confirming' : ''
+                      }`}
+                      disabled={isDeleting}
+                    >
+                      <Trash2 size={14} />
+                      {deleteConfirmId === session.id && (
+                        <span className="delete-confirm">Click to confirm</span>
+                      )}
+                    </button>
+                  )}
+                </button>
+              ))}
           </div>
-          {error && <div className="error-message">{error}</div>}
-        </form>
+
+          {showNewSessionForm && (
+            <form onSubmit={createNewSession} className="new-session-form">
+              <div className="form-content">
+                <input
+                  type="text"
+                  value={newSessionName}
+                  onChange={(e) => setNewSessionName(e.target.value)}
+                  placeholder="New session name"
+                  className="session-input"
+                  maxLength={30}
+                />
+                <button 
+                  type="submit" 
+                  className="submit-button"
+                  disabled={!newSessionName.trim()}
+                >
+                  <Plus size={24} />
+                </button>
+              </div>
+              {error && <div className="error-message">{error}</div>}
+            </form>
+          )}
+        </>
       )}
     </div>
   );

@@ -64,5 +64,22 @@
 }
 
 .error-message {
-  @apply mt-2 text-sm text-red-300 text-center;
+  padding: 1rem;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: 0.5rem;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.2s;
+}
+
+.error-message:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+.error-message:disabled {
+  cursor: wait;
+  opacity: 0.7;
 }

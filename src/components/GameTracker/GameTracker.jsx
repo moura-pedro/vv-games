@@ -38,7 +38,7 @@ const GameTracker = () => {
           setSessions([defaultSession]);
         } else {
           setSessions(data);
-          setCurrentSessionId(data[0].id);
+          setCurrentSessionId(data[data.length - 1].id);
         }
       } catch (err) {
         setError('Failed to load sessions');
