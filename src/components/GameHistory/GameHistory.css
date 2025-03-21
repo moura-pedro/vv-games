@@ -84,12 +84,20 @@
     @apply bg-white/5 rounded-lg p-4 hover:bg-white/10 transition-colors;
   }
   
+  .game-content {
+    @apply flex flex-col gap-2;
+  }
+  
+  .game-main-info {
+    @apply flex items-center justify-between;
+  }
+  
   .game-info {
-    @apply flex justify-between items-center;
+    @apply flex items-center gap-6;
   }
   
   .game-name {
-    @apply text-white font-medium;
+    @apply text-white font-medium text-lg;
   }
   
   .winner-info {
@@ -101,7 +109,17 @@
   }
   
   .winner-name {
-    @apply text-sm;
+    @apply text-base;
+  }
+  
+  .game-date {
+    @apply text-sm text-white/40 mt-1;
+  }
+  
+  .delete-game-button {
+    @apply text-white/60 hover:text-red-400 p-2 rounded-full 
+      hover:bg-white/10 transition-colors
+      disabled:opacity-50 disabled:cursor-not-allowed;
   }
   
   .empty-state {
@@ -113,4 +131,65 @@
     .history-content {
       -webkit-overflow-scrolling: touch;
     }
+  }
+  
+  .delete-confirmation-overlay {
+    @apply fixed inset-0 bg-black/50 backdrop-blur-sm z-50;
+  }
+  
+  .delete-confirmation-modal {
+    @apply fixed bg-gray-800 rounded-xl p-6
+      flex flex-col items-center text-center animate-fade-in
+      shadow-xl border border-white/10;
+    /* Make sure modal fits on mobile */
+    width: min(90vw, 20rem);
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .delete-confirmation-wrapper {
+    @apply relative;
+  }
+  
+  .confirmation-title {
+    @apply text-xl font-semibold text-white mb-2;
+  }
+  
+  .confirmation-text {
+    @apply text-white/80 mb-6;
+  }
+  
+  .game-details {
+    @apply block mt-2 font-medium text-white;
+  }
+  
+  .confirmation-buttons {
+    @apply flex gap-3 w-full;
+  }
+  
+  .cancel-button {
+    @apply flex-1 px-4 py-2 rounded-lg bg-white/10 text-white
+      hover:bg-white/20 transition-colors
+      disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  
+  .confirm-button {
+    @apply flex-1 px-4 py-2 rounded-lg bg-red-500 text-white
+      hover:bg-red-600 transition-colors
+      disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -45%);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%);
+    }
+  }
+  
+  .animate-fade-in {
+    animation: fade-in 0.2s ease-out;
   }
