@@ -37,4 +37,12 @@ export const api = {
     });
     if (!response.ok) throw new Error('Failed to delete session');
   },
+
+  async deleteGame(sessionId, gameIndex) {
+    const response = await fetch(`${API_BASE_URL}/sessions/${sessionId}/games/${gameIndex}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) throw new Error('Failed to delete game');
+    return response.json();
+  },
 };

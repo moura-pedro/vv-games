@@ -113,7 +113,12 @@ const GameTracker = () => {
         )}
 
         {activeTab === 'history' && (
-          <GameHistory games={currentSession.games} />
+          <GameHistory 
+            games={currentSession.games} 
+            currentSessionId={currentSessionId}
+            sessions={sessions}
+            setSessions={setSessions}
+          />
         )}
       </div>
     </div>
