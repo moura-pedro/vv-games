@@ -9,19 +9,17 @@ const PlayerRankings = ({ currentSession, sessions, setSessions, currentSessionI
   const [confirmDelete, setConfirmDelete] = useState(null);
 
   const playerStats = useMemo(() => {
+    const totalGamesInSession = currentSession.games.length;
     const stats = currentSession.players.map(player => {
-      const totalGames = currentSession.games.filter(game => 
-        game.game.includes(player) || game.winner === player
-      ).length;
       const wins = currentSession.games.filter(game => 
         game.winner === player
       ).length;
-      const winRate = totalGames > 0 ? (wins / totalGames) * 100 : 0;
+      const winRate = totalGamesInSession > 0 ? (wins / totalGamesInSession) * 100 : 0;
       
       return {
         name: player,
         wins,
-        totalGames,
+        totalGames: totalGamesInSession,
         winRate,
       };
     }).sort((a, b) => b.wins - a.wins || b.winRate - a.winRate);
@@ -99,10 +97,10 @@ const PlayerRankings = ({ currentSession, sessions, setSessions, currentSessionI
                     <Percent size={14} />
                     <span>{player.winRate.toFixed(1)}%</span>
                   </div>
-                  <div className="stat-item">
+                  {/* <div className="stat-item">
                     <Hash size={14} />
                     <span>{player.totalGames} games</span>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
