@@ -6,7 +6,7 @@ const TabNav = ({ activeTab, setActiveTab }) => {
   const tabs = [
     {
       id: 'rankings',
-      label: 'Rankings',
+      label: 'Ranking',
       icon: <Trophy size={20} />
     },
     {
@@ -16,7 +16,7 @@ const TabNav = ({ activeTab, setActiveTab }) => {
     },
     {
       id: 'add',
-      label: 'Add Player',
+      label: 'Adicionar Jogador',
       icon: <Plus size={20} />
     },
     {

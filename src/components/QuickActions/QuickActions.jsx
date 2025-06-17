@@ -6,15 +6,15 @@ const QuickActions = ({ setActiveTab }) => {
   const actions = [
     {
       id: 'add',
-      title: 'Add Player',
-      description: 'Join the game',
+      title: 'Adicionar Jogador',
+      description: 'Entrar no jogo',
       icon: <PlusCircle size={24} />,
       gradient: 'from-green-400 to-green-500'
     },
     {
       id: 'record',
-      title: 'Record Win',
-      description: 'Log a victory',
+      title: 'Registrar Vitória',
+      description: 'Pontuar um jogador',
       icon: <Trophy size={24} />,
       gradient: 'from-blue-400 to-blue-500'
     }

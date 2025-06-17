@@ -18,7 +18,7 @@ const RecordGameForm = ({
   const recordGame = async (e) => {
     e.preventDefault();
     if (!newGame.trim() || !winner) {
-      setError('Please fill in all fields');
+      setError('Por favor, preencha todos os campos');
       return;
     }
 
@@ -41,14 +41,14 @@ const RecordGameForm = ({
       setSessions(sessions.map(s => s.id === currentSessionId ? updated : s));
       
       // Show success message
-      setSuccessMessage('Game recorded successfully!');
+      setSuccessMessage('Partida registrada com sucesso!');
       setTimeout(() => setSuccessMessage(''), 3000);
       
       // Reset form
       setNewGame('');
       setWinner('');
     } catch (err) {
-      setError('Failed to record game. Please try again.');
+      setError('Falha ao registrar a partida. Por favor, tente novamente.');
     } finally {
       setIsSubmitting(false);
     }
@@ -58,7 +58,7 @@ const RecordGameForm = ({
     <div className="record-game-form">
       <div className="form-header">
         <Trophy size={24} className="form-icon" />
-        <h2 className="form-title">Record Game Result</h2>
+        <h2 className="form-title">Registrar Resultado da Partida</h2>
       </div>
 
       {successMessage && (
@@ -70,7 +70,7 @@ const RecordGameForm = ({
       <form onSubmit={recordGame} className="form-content">
         <div className="form-group">
           <label htmlFor="gameName" className="form-label">
-            Game Name
+            Nome do Jogo
           </label>
           <div className="input-wrapper">
             <input
@@ -78,7 +78,7 @@ const RecordGameForm = ({
               type="text"
               value={newGame}
               onChange={(e) => setNewGame(e.target.value)}
-              placeholder="Enter game name"
+              placeholder="Digite o nome do jogo"
               className="form-input"
               disabled={isSubmitting}
             />
@@ -96,7 +96,7 @@ const RecordGameForm = ({
 
         <div className="form-group">
           <label htmlFor="winner" className="form-label">
-            Winner
+            Vencedor
           </label>
           <select
             id="winner"
@@ -105,7 +105,7 @@ const RecordGameForm = ({
             className="form-select"
             disabled={isSubmitting}
           >
-            <option value="">Select winner</option>
+            <option value="">Selecione o vencedor</option>
             {currentSession.players.map(player => (
               <option key={player} value={player}>
                 {player}
@@ -122,11 +122,11 @@ const RecordGameForm = ({
           disabled={isSubmitting || !newGame.trim() || !winner}
         >
           {isSubmitting ? (
-            <span className="loading-text">Recording...</span>
+            <span className="loading-text">Gravando...</span>
           ) : (
             <>
               <Save size={20} />
-              Record Game
+              Registrar Partida
             </>
           )}
         </button>

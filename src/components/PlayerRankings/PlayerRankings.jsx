@@ -48,7 +48,7 @@ const PlayerRankings = ({ currentSession, sessions, setSessions, currentSessionI
     <div className="player-rankings">
       <div className="rankings-header">
         <Trophy size={24} className="header-icon" />
-        <h2 className="header-title">Player Rankings</h2>
+        <h2 className="header-title">Ranking de Jogadores</h2>
       </div>
 
       {error && (
@@ -63,14 +63,14 @@ const PlayerRankings = ({ currentSession, sessions, setSessions, currentSessionI
           <div className="stats-icon">👥</div>
           <div className="stats-info">
             <div className="stats-value">{currentSession.players.length}</div>
-            <div className="stats-label">Players</div>
+            <div className="stats-label">Jogadores</div>
           </div>
         </div>
         <div className="stats-card total-games">
           <div className="stats-icon">🎮</div>
           <div className="stats-info">
             <div className="stats-value">{currentSession.games.length}</div>
-            <div className="stats-label">Games</div>
+            <div className="stats-label">Partidas</div>
           </div>
         </div>
       </div>
@@ -91,7 +91,7 @@ const PlayerRankings = ({ currentSession, sessions, setSessions, currentSessionI
                 <div className="player-stats">
                   <div className="stat-item">
                     <Trophy size={14} />
-                    <span>{player.wins} wins</span>
+                    <span>{player.wins} vitórias</span>
                   </div>
                   <div className="stat-item">
                     <Percent size={14} />
@@ -108,8 +108,8 @@ const PlayerRankings = ({ currentSession, sessions, setSessions, currentSessionI
         </div>
       ) : (
         <div className="empty-rankings">
-          <p>No players added yet</p>
-          <p className="empty-subtitle">Add players to start tracking rankings</p>
+          <p>Nenhum jogador adicionado ainda</p>
+          <p className="empty-subtitle">Adicione jogadores para começar a acompanhar o ranking</p>
         </div>
       )}
     </div>
