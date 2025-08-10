@@ -1,6 +1,6 @@
 /* src/components/GameTracker/PlayerRankings/PlayerRankings.css */
 .player-rankings {
-  @apply bg-primary-900/30 backdrop-blur-sm rounded-xl p-6 space-y-6;
+  @apply bg-primary-900/50 backdrop-blur-sm rounded-xl p-6 space-y-6;
 }
 
 .rankings-header {
@@ -25,7 +25,7 @@
 }
 
 .stats-card {
-  @apply flex items-center gap-3 p-4 rounded-lg bg-primary-900/20 hover:bg-primary-900/30 
+  @apply flex items-center gap-3 p-4 rounded-lg bg-primary-900/40 hover:bg-primary-900/50 
     transition-colors;
 }
 
@@ -50,7 +50,7 @@
 }
 
 .player-card {
-  @apply flex items-center gap-4 p-4 rounded-lg bg-primary-900/20 hover:bg-primary-900/30 
+  @apply flex items-center gap-4 p-4 rounded-lg bg-primary-900/40 hover:bg-primary-900/50 
     transition-all hover:translate-x-1;
 }
 

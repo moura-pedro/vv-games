@@ -31,7 +31,7 @@
 }
 
 .form-input {
-  @apply w-full px-4 py-3 rounded-lg bg-primary-900/30 text-sand-50 placeholder-sand-100/50
+  @apply w-full px-4 py-3 rounded-lg bg-primary-900/50 text-sand-50 placeholder-sand-100/50
     border border-primary-300/20 focus:outline-none focus:border-sand-300 transition-colors;
 }
 
@@ -41,7 +41,7 @@
 }
 
 .form-select {
-  @apply w-full px-4 py-3 rounded-lg bg-primary-900/30 text-sand-50 border border-primary-300/20
+  @apply w-full px-4 py-3 rounded-lg bg-primary-900/50 text-sand-50 border border-primary-300/20
     focus:outline-none focus:border-sand-300 transition-colors appearance-none;
 }
 

@@ -3,7 +3,7 @@
   }
   
   .action-button {
-    @apply p-6 rounded-xl text-sand-50 text-left transition-transform hover:scale-105 
+    @apply p-6 rounded-xl text-left transition-transform hover:scale-105 
       active:scale-95 focus:outline-none focus:ring-2 focus:ring-sand-300/50;
   }
   
