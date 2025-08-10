@@ -67,3 +67,31 @@
 .loading-text {
   @apply animate-pulse;
 }
+
+.checkbox-group {
+  @apply flex flex-col gap-3;
+}
+
+.checkbox-item {
+  @apply flex items-center gap-3 cursor-pointer p-3 rounded-lg 
+    bg-primary-900/20 hover:bg-primary-900/40 border border-primary-300/10
+    hover:border-primary-300/20 transition-all;
+}
+
+.checkbox-item input[type="checkbox"] {
+  @apply w-4 h-4 rounded border-2 border-primary-300/30 bg-primary-900/50
+    text-sand-300 focus:ring-sand-300 focus:ring-2 focus:ring-offset-0
+    checked:bg-sand-300 checked:border-sand-300;
+}
+
+.checkbox-item span {
+  @apply text-sand-100 font-medium;
+}
+
+.checkbox-item:has(input:checked) {
+  @apply bg-sand-300/10 border-sand-300/30;
+}
+
+.checkbox-item:has(input:checked) span {
+  @apply text-sand-200;
+}

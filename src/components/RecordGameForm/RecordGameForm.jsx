@@ -10,14 +10,14 @@ const RecordGameForm = ({
   currentSessionId 
 }) => {
   const [newGame, setNewGame] = useState('');
-  const [winner, setWinner] = useState('');
+  const [winners, setWinners] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
 
   const recordGame = async (e) => {
     e.preventDefault();
-    if (!newGame.trim() || !winner) {
+    if (!newGame.trim() || winners.length === 0) {
       setError('Por favor, preencha todos os campos');
       return;
     }
@@ -26,15 +26,18 @@ const RecordGameForm = ({
     setError(null);
 
     try {
-      const gameRecord = {
+      const date = new Date().toLocaleDateString();
+      
+      // Create a separate game record for each winner
+      const gameRecords = winners.map(winner => ({
         game: newGame.trim(),
         winner,
-        date: new Date().toLocaleDateString()
-      };
+        date
+      }));
       
       const updatedSession = {
         ...currentSession,
-        games: [gameRecord, ...currentSession.games]
+        games: [...gameRecords, ...currentSession.games]
       };
       
       const updated = await api.updateSession(updatedSession);
@@ -46,7 +49,7 @@ const RecordGameForm = ({
       
       // Reset form
       setNewGame('');
-      setWinner('');
+      setWinners([]);
     } catch (err) {
       setError('Falha ao registrar a partida. Por favor, tente novamente.');
     } finally {
@@ -95,23 +98,31 @@ const RecordGameForm = ({
         </div>
 
         <div className="form-group">
-          <label htmlFor="winner" className="form-label">
-            Vencedor
+          <label className="form-label">
+            Vencedores
           </label>
-          <select
-            id="winner"
-            value={winner}
-            onChange={(e) => setWinner(e.target.value)}
-            className="form-select"
-            disabled={isSubmitting}
-          >
-            <option value="">Selecione o vencedor</option>
-            {currentSession.players.map(player => (
-              <option key={player} value={player}>
-                {player}
-              </option>
-            ))}
-          </select>
+          <div className="checkbox-group">
+            {currentSession.players.map(player => {
+              const checked = winners.includes(player);
+              return (
+                <label key={player} className="checkbox-item">
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    onChange={() => {
+                      setWinners(prev => (
+                        prev.includes(player)
+                          ? prev.filter(p => p !== player)
+                          : [...prev, player]
+                      ));
+                    }}
+                    disabled={isSubmitting}
+                  />
+                  <span>{player}</span>
+                </label>
+              );
+            })}
+          </div>
         </div>
 
         {error && <div className="error-message">{error}</div>}
@@ -119,7 +130,7 @@ const RecordGameForm = ({
         <button
           type="submit"
           className="submit-button"
-          disabled={isSubmitting || !newGame.trim() || !winner}
+          disabled={isSubmitting || !newGame.trim() || winners.length === 0}
         >
           {isSubmitting ? (
             <span className="loading-text">Gravando...</span>
