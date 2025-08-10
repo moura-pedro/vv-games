@@ -26,8 +26,11 @@ const GameTracker = () => {
     const fetchSessions = async () => {
       try {
         setLoading(true);
-        const data = await api.fetchSessions();
-        if (data.length === 0) {
+
+        // Fast path: latest 3 sessions first for immediate render
+        const latest = await api.fetchSessions({ limit: 3, sort: '-createdAt' });
+
+        if (latest.length === 0) {
           const defaultSession = {
             id: 'default',
             name: 'Default Session',
@@ -36,10 +39,21 @@ const GameTracker = () => {
           };
           await api.createSession(defaultSession);
           setSessions([defaultSession]);
+          setCurrentSessionId('default');
         } else {
-          setSessions(data);
-          setCurrentSessionId(data[data.length - 1].id);
+          setSessions(latest);
+          setCurrentSessionId(latest[0].id); // Set to the most recent session
         }
+
+        // Background: fetch all sessions (won't block initial render)
+        api.fetchSessions({ sort: '-createdAt' })
+          .then((all) => {
+            if (all.length > latest.length) {
+              setSessions(all);
+            }
+          })
+          .catch(() => { /* ignore background errors to not disrupt UX */ });
+
       } catch (err) {
         setError('Failed to load sessions');
       } finally {

@@ -22,7 +22,7 @@ const SessionSelector = ({
     setIsRetrying(true);
     setError(null);
     try {
-      const fetchedSessions = await api.getSessions();
+      const fetchedSessions = await api.fetchSessions({ sort: '-createdAt' });
       setSessions(fetchedSessions);
     } catch (err) {
       setError('Failed to load sessions. Click to retry.');
