@@ -14,6 +14,54 @@ const RecordGameForm = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [gameSuggestions, setGameSuggestions] = useState([]);
+
+  // Get unique game names from all sessions
+  const getAllUniqueGames = () => {
+    const allGames = sessions.flatMap(session => 
+      session.games?.map(game => game.game) || []
+    );
+    return [...new Set(allGames)].sort();
+  };
+
+  // Filter games based on input and generate suggestions
+  const generateGameSuggestions = (input) => {
+    if (!input.trim()) {
+      setGameSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+
+    const uniqueGames = getAllUniqueGames();
+    const filtered = uniqueGames.filter(game => 
+      game.toLowerCase().includes(input.toLowerCase())
+    );
+    
+    setGameSuggestions(filtered.slice(0, 5)); // Show max 5 suggestions
+    setShowSuggestions(filtered.length > 0);
+  };
+
+  // Handle game input change
+  const handleGameInputChange = (e) => {
+    const value = e.target.value;
+    setNewGame(value);
+    generateGameSuggestions(value);
+  };
+
+  // Handle suggestion selection
+  const handleSuggestionSelect = (gameName) => {
+    setNewGame(gameName);
+    setShowSuggestions(false);
+    setGameSuggestions([]);
+  };
+
+  // Handle input blur (with delay to allow click on suggestions)
+  const handleInputBlur = () => {
+    setTimeout(() => {
+      setShowSuggestions(false);
+    }, 150);
+  };
 
   const recordGame = async (e) => {
     e.preventDefault();
@@ -80,19 +128,41 @@ const RecordGameForm = ({
               id="gameName"
               type="text"
               value={newGame}
-              onChange={(e) => setNewGame(e.target.value)}
+              onChange={handleGameInputChange}
+              onBlur={handleInputBlur}
+              onFocus={() => generateGameSuggestions(newGame)}
               placeholder="Digite o nome do jogo"
               className="form-input"
               disabled={isSubmitting}
+              autoComplete="off"
             />
             {newGame && (
               <button
                 type="button"
-                onClick={() => setNewGame('')}
+                onClick={() => {
+                  setNewGame('');
+                  setShowSuggestions(false);
+                  setGameSuggestions([]);
+                }}
                 className="clear-button"
               >
                 <X size={16} />
               </button>
+            )}
+            {showSuggestions && gameSuggestions.length > 0 && (
+              <div className="suggestions-dropdown">
+                {gameSuggestions.map((game, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    className="suggestion-item"
+                    onClick={() => handleSuggestionSelect(game)}
+                    onMouseDown={(e) => e.preventDefault()} // Prevent blur
+                  >
+                    {game}
+                  </button>
+                ))}
+              </div>
             )}
           </div>
         </div>

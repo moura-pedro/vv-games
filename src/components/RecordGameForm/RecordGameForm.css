@@ -95,3 +95,17 @@
 .checkbox-item:has(input:checked) span {
   @apply text-sand-200;
 }
+
+.suggestions-dropdown {
+  @apply absolute top-full left-0 right-0 z-50 bg-primary-800 border border-primary-300/20 
+    rounded-lg mt-1 shadow-lg max-h-40 overflow-y-auto;
+}
+
+.suggestion-item {
+  @apply w-full px-4 py-3 text-left text-sand-100 hover:bg-primary-700 
+    hover:text-sand-50 transition-colors text-sm first:rounded-t-lg last:rounded-b-lg;
+}
+
+.suggestion-item:focus {
+  @apply outline-none bg-primary-700 text-sand-50;
+}
