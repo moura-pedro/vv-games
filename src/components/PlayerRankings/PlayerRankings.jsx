@@ -9,19 +9,17 @@ const PlayerRankings = ({ currentSession, sessions, setSessions, currentSessionI
   const [confirmDelete, setConfirmDelete] = useState(null);
 
   const playerStats = useMemo(() => {
+    const totalGamesInSession = currentSession.games.length;
     const stats = currentSession.players.map(player => {
-      const totalGames = currentSession.games.filter(game => 
-        game.game.includes(player) || game.winner === player
-      ).length;
       const wins = currentSession.games.filter(game => 
         game.winner === player
       ).length;
-      const winRate = totalGames > 0 ? (wins / totalGames) * 100 : 0;
+      const winRate = totalGamesInSession > 0 ? (wins / totalGamesInSession) * 100 : 0;
       
       return {
         name: player,
         wins,
-        totalGames,
+        totalGames: totalGamesInSession,
         winRate,
       };
     }).sort((a, b) => b.wins - a.wins || b.winRate - a.winRate);
@@ -50,7 +48,7 @@ const PlayerRankings = ({ currentSession, sessions, setSessions, currentSessionI
     <div className="player-rankings">
       <div className="rankings-header">
         <Trophy size={24} className="header-icon" />
-        <h2 className="header-title">Player Rankings</h2>
+        <h2 className="header-title">Ranking de Jogadores</h2>
       </div>
 
       {error && (
@@ -65,14 +63,14 @@ const PlayerRankings = ({ currentSession, sessions, setSessions, currentSessionI
           <div className="stats-icon">👥</div>
           <div className="stats-info">
             <div className="stats-value">{currentSession.players.length}</div>
-            <div className="stats-label">Players</div>
+            <div className="stats-label">Jogadores</div>
           </div>
         </div>
         <div className="stats-card total-games">
           <div className="stats-icon">🎮</div>
           <div className="stats-info">
             <div className="stats-value">{currentSession.games.length}</div>
-            <div className="stats-label">Games</div>
+            <div className="stats-label">Partidas</div>
           </div>
         </div>
       </div>
@@ -93,16 +91,16 @@ const PlayerRankings = ({ currentSession, sessions, setSessions, currentSessionI
                 <div className="player-stats">
                   <div className="stat-item">
                     <Trophy size={14} />
-                    <span>{player.wins} wins</span>
+                    <span>{player.wins} vitórias</span>
                   </div>
                   <div className="stat-item">
                     <Percent size={14} />
                     <span>{player.winRate.toFixed(1)}%</span>
                   </div>
-                  <div className="stat-item">
+                  {/* <div className="stat-item">
                     <Hash size={14} />
                     <span>{player.totalGames} games</span>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
@@ -110,8 +108,8 @@ const PlayerRankings = ({ currentSession, sessions, setSessions, currentSessionI
         </div>
       ) : (
         <div className="empty-rankings">
-          <p>No players added yet</p>
-          <p className="empty-subtitle">Add players to start tracking rankings</p>
+          <p>Nenhum jogador adicionado ainda</p>
+          <p className="empty-subtitle">Adicione jogadores para começar a acompanhar o ranking</p>
         </div>
       )}
     </div>

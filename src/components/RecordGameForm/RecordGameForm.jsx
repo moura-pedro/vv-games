@@ -10,15 +10,63 @@ const RecordGameForm = ({
   currentSessionId 
 }) => {
   const [newGame, setNewGame] = useState('');
-  const [winner, setWinner] = useState('');
+  const [winners, setWinners] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [gameSuggestions, setGameSuggestions] = useState([]);
+
+  // Get unique game names from all sessions
+  const getAllUniqueGames = () => {
+    const allGames = sessions.flatMap(session => 
+      session.games?.map(game => game.game) || []
+    );
+    return [...new Set(allGames)].sort();
+  };
+
+  // Filter games based on input and generate suggestions
+  const generateGameSuggestions = (input) => {
+    if (!input.trim()) {
+      setGameSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+
+    const uniqueGames = getAllUniqueGames();
+    const filtered = uniqueGames.filter(game => 
+      game.toLowerCase().includes(input.toLowerCase())
+    );
+    
+    setGameSuggestions(filtered.slice(0, 5)); // Show max 5 suggestions
+    setShowSuggestions(filtered.length > 0);
+  };
+
+  // Handle game input change
+  const handleGameInputChange = (e) => {
+    const value = e.target.value;
+    setNewGame(value);
+    generateGameSuggestions(value);
+  };
+
+  // Handle suggestion selection
+  const handleSuggestionSelect = (gameName) => {
+    setNewGame(gameName);
+    setShowSuggestions(false);
+    setGameSuggestions([]);
+  };
+
+  // Handle input blur (with delay to allow click on suggestions)
+  const handleInputBlur = () => {
+    setTimeout(() => {
+      setShowSuggestions(false);
+    }, 150);
+  };
 
   const recordGame = async (e) => {
     e.preventDefault();
-    if (!newGame.trim() || !winner) {
-      setError('Please fill in all fields');
+    if (!newGame.trim() || winners.length === 0) {
+      setError('Por favor, preencha todos os campos');
       return;
     }
 
@@ -26,29 +74,32 @@ const RecordGameForm = ({
     setError(null);
 
     try {
-      const gameRecord = {
+      const date = new Date().toLocaleDateString();
+      
+      // Create a separate game record for each winner
+      const gameRecords = winners.map(winner => ({
         game: newGame.trim(),
         winner,
-        date: new Date().toLocaleDateString()
-      };
+        date
+      }));
       
       const updatedSession = {
         ...currentSession,
-        games: [gameRecord, ...currentSession.games]
+        games: [...gameRecords, ...currentSession.games]
       };
       
       const updated = await api.updateSession(updatedSession);
       setSessions(sessions.map(s => s.id === currentSessionId ? updated : s));
       
       // Show success message
-      setSuccessMessage('Game recorded successfully!');
+      setSuccessMessage('Partida registrada com sucesso!');
       setTimeout(() => setSuccessMessage(''), 3000);
       
       // Reset form
       setNewGame('');
-      setWinner('');
+      setWinners([]);
     } catch (err) {
-      setError('Failed to record game. Please try again.');
+      setError('Falha ao registrar a partida. Por favor, tente novamente.');
     } finally {
       setIsSubmitting(false);
     }
@@ -58,7 +109,7 @@ const RecordGameForm = ({
     <div className="record-game-form">
       <div className="form-header">
         <Trophy size={24} className="form-icon" />
-        <h2 className="form-title">Record Game Result</h2>
+        <h2 className="form-title">Registrar Resultado da Partida</h2>
       </div>
 
       {successMessage && (
@@ -70,48 +121,78 @@ const RecordGameForm = ({
       <form onSubmit={recordGame} className="form-content">
         <div className="form-group">
           <label htmlFor="gameName" className="form-label">
-            Game Name
+            Nome do Jogo
           </label>
           <div className="input-wrapper">
             <input
               id="gameName"
               type="text"
               value={newGame}
-              onChange={(e) => setNewGame(e.target.value)}
-              placeholder="Enter game name"
+              onChange={handleGameInputChange}
+              onBlur={handleInputBlur}
+              onFocus={() => generateGameSuggestions(newGame)}
+              placeholder="Digite o nome do jogo"
               className="form-input"
               disabled={isSubmitting}
+              autoComplete="off"
             />
             {newGame && (
               <button
                 type="button"
-                onClick={() => setNewGame('')}
+                onClick={() => {
+                  setNewGame('');
+                  setShowSuggestions(false);
+                  setGameSuggestions([]);
+                }}
                 className="clear-button"
               >
                 <X size={16} />
               </button>
             )}
+            {showSuggestions && gameSuggestions.length > 0 && (
+              <div className="suggestions-dropdown">
+                {gameSuggestions.map((game, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    className="suggestion-item"
+                    onClick={() => handleSuggestionSelect(game)}
+                    onMouseDown={(e) => e.preventDefault()} // Prevent blur
+                  >
+                    {game}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
         <div className="form-group">
-          <label htmlFor="winner" className="form-label">
-            Winner
+          <label className="form-label">
+            Vencedores
           </label>
-          <select
-            id="winner"
-            value={winner}
-            onChange={(e) => setWinner(e.target.value)}
-            className="form-select"
-            disabled={isSubmitting}
-          >
-            <option value="">Select winner</option>
-            {currentSession.players.map(player => (
-              <option key={player} value={player}>
-                {player}
-              </option>
-            ))}
-          </select>
+          <div className="checkbox-group">
+            {currentSession.players.map(player => {
+              const checked = winners.includes(player);
+              return (
+                <label key={player} className="checkbox-item">
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    onChange={() => {
+                      setWinners(prev => (
+                        prev.includes(player)
+                          ? prev.filter(p => p !== player)
+                          : [...prev, player]
+                      ));
+                    }}
+                    disabled={isSubmitting}
+                  />
+                  <span>{player}</span>
+                </label>
+              );
+            })}
+          </div>
         </div>
 
         {error && <div className="error-message">{error}</div>}
@@ -119,14 +200,14 @@ const RecordGameForm = ({
         <button
           type="submit"
           className="submit-button"
-          disabled={isSubmitting || !newGame.trim() || !winner}
+          disabled={isSubmitting || !newGame.trim() || winners.length === 0}
         >
           {isSubmitting ? (
-            <span className="loading-text">Recording...</span>
+            <span className="loading-text">Gravando...</span>
           ) : (
             <>
               <Save size={20} />
-              Record Game
+              Registrar Partida
             </>
           )}
         </button>

@@ -1,6 +1,6 @@
 // src/components/GameTracker/SessionSelector/SessionSelector.jsx
-import React, { useState } from 'react';
-import { Users, Plus, Trash2 } from 'lucide-react';
+import React, { useRef, useState } from 'react';
+import { Users, Plus, Trash2, ChevronDown, Check } from 'lucide-react';
 import { api } from '../../services/api';
 import './SessionSelector.css';
 
@@ -17,12 +17,14 @@ const SessionSelector = ({
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
   const [isRetrying, setIsRetrying] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const handleRetry = async () => {
     setIsRetrying(true);
     setError(null);
     try {
-      const fetchedSessions = await api.getSessions();
+      const fetchedSessions = await api.fetchSessions({ sort: '-createdAt' });
       setSessions(fetchedSessions);
     } catch (err) {
       setError('Failed to load sessions. Click to retry.');
@@ -87,15 +89,20 @@ const SessionSelector = ({
     }
   }, [error]);
 
-  // Click outside handler to reset delete confirmation
+  // Click outside handler to reset delete confirmation and close dropdown
   React.useEffect(() => {
-    const handleClickOutside = () => setDeleteConfirmId(null);
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDeleteConfirmId(null);
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   return (
-    <div className="session-selector">
+    <div className="session-selector" ref={dropdownRef}>
       {error ? (
         <button 
           onClick={handleRetry} 
@@ -107,35 +114,64 @@ const SessionSelector = ({
         </button>
       ) : (
         <>
-          <div className="session-list">
-            {[...sessions]
-              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-              .map(session => (
-                <button
-                  key={session.id}
-                  onClick={() => setCurrentSessionId(session.id)}
-                  className={`session-button ${
-                    currentSessionId === session.id ? 'active' : ''
-                  }`}
-                >
-                  <Users size={16} />
-                  <span>{session.name}</span>
-                  {sessions.length > 1 && (
-                    <button
-                      onClick={(e) => deleteSession(e, session.id)}
-                      className={`delete-button ${
-                        deleteConfirmId === session.id ? 'confirming' : ''
-                      }`}
-                      disabled={isDeleting}
-                    >
-                      <Trash2 size={14} />
-                      {deleteConfirmId === session.id && (
-                        <span className="delete-confirm">Click to confirm</span>
+          <div className="dropdown">
+            <button
+              type="button"
+              className={`dropdown-trigger ${isOpen ? 'open' : ''}`}
+              onClick={() => setIsOpen((prev) => !prev)}
+              aria-haspopup="listbox"
+              aria-expanded={isOpen}
+            >
+              <div className="trigger-content">
+                <Users size={18} />
+                <span className="trigger-label">
+                  {sessions.find(s => s.id === currentSessionId)?.name || 'Select session'}
+                </span>
+              </div>
+              <ChevronDown className={`trigger-caret ${isOpen ? 'rotated' : ''}`} size={18} />
+            </button>
+
+            {isOpen && (
+              <div className="dropdown-menu" role="listbox">
+                {[...sessions]
+                  .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                  .map((session) => (
+                    <div key={session.id} className="dropdown-item-wrapper">
+                      <button
+                        type="button"
+                        role="option"
+                        aria-selected={currentSessionId === session.id}
+                        className={`dropdown-item ${currentSessionId === session.id ? 'active' : ''}`}
+                        onClick={() => {
+                          setCurrentSessionId(session.id);
+                          setIsOpen(false);
+                        }}
+                      >
+                        <div className="item-left">
+                          <Users size={16} />
+                          <span className="item-label">{session.name}</span>
+                        </div>
+                        {currentSessionId === session.id ? (
+                          <Check size={16} className="item-check" />
+                        ) : null}
+                      </button>
+                      {sessions.length > 1 && (
+                        <button
+                          onClick={(e) => deleteSession(e, session.id)}
+                          className={`delete-button ${deleteConfirmId === session.id ? 'confirming' : ''}`}
+                          disabled={isDeleting}
+                          title={deleteConfirmId === session.id ? 'Click to confirm' : 'Delete session'}
+                        >
+                          <Trash2 size={14} />
+                          {deleteConfirmId === session.id && (
+                            <span className="delete-confirm">Click to confirm</span>
+                          )}
+                        </button>
                       )}
-                    </button>
-                  )}
-                </button>
-              ))}
+                    </div>
+                  ))}
+              </div>
+            )}
           </div>
 
           {showNewSessionForm && (

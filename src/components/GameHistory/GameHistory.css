@@ -1,5 +1,5 @@
 .game-history {
-    @apply bg-white/10 backdrop-blur-sm rounded-xl p-6 space-y-6;
+    @apply bg-primary-900/50 backdrop-blur-sm rounded-xl p-6 space-y-6;
   }
   
   .history-header {
@@ -11,11 +11,11 @@
   }
   
   .header-icon {
-    @apply text-white/80;
+    @apply text-sand-100/90;
   }
   
   .title-text {
-    @apply text-xl font-semibold text-white;
+    @apply text-xl font-semibold text-sand-100;
   }
   
   .search-container {
@@ -27,18 +27,18 @@
   }
   
   .search-icon {
-    @apply absolute left-3 top-1/2 -translate-y-1/2 text-white/40;
+    @apply absolute left-3 top-1/2 -translate-y-1/2 text-sand-100/50;
   }
   
   .search-input {
-    @apply w-full pl-10 pr-8 py-2 rounded-lg bg-white/10 text-white 
-      placeholder-white/40 border border-white/20 focus:outline-none 
-      focus:border-white transition-colors;
+    @apply w-full pl-10 pr-8 py-2 rounded-lg bg-primary-900/50 text-sand-50 
+      placeholder-sand-100/50 border border-primary-300/20 focus:outline-none 
+      focus:border-sand-300 transition-colors;
   }
   
   .clear-search {
-    @apply absolute right-3 top-1/2 -translate-y-1/2 text-white/40 
-      hover:text-white/60 p-1 rounded-full hover:bg-white/10 transition-colors;
+    @apply absolute right-3 top-1/2 -translate-y-1/2 text-sand-100/50 
+      hover:text-sand-100/70 p-1 rounded-full hover:bg-primary-900/30 transition-colors;
   }
   
   .filter-dropdown {
@@ -46,12 +46,12 @@
   }
   
   .filter-icon {
-    @apply absolute left-3 top-1/2 -translate-y-1/2 text-white/40;
+    @apply absolute left-3 top-1/2 -translate-y-1/2 text-sand-100/50;
   }
   
   .filter-select {
-    @apply pl-10 pr-4 py-2 rounded-lg bg-white/10 text-white border 
-      border-white/20 focus:outline-none focus:border-white transition-colors 
+    @apply pl-10 pr-4 py-2 rounded-lg bg-primary-900/50 text-sand-50 border 
+      border-primary-300/20 focus:outline-none focus:border-sand-300 transition-colors 
       appearance-none cursor-pointer;
   }
   
@@ -60,8 +60,8 @@
   }
   
   .suggestion-chip {
-    @apply px-3 py-1 rounded-full bg-white/20 text-white text-sm 
-      hover:bg-white/30 transition-colors;
+    @apply px-3 py-1 rounded-full bg-sand-300/25 text-sand-100 text-sm 
+      hover:bg-sand-300/35 transition-colors;
   }
   
   .history-content {
@@ -73,7 +73,7 @@
   }
   
   .date-header {
-    @apply flex items-center gap-2 text-white/60 text-sm;
+    @apply flex items-center gap-2 text-sand-100/70 text-sm;
   }
   
   .games-list {
@@ -81,7 +81,7 @@
   }
   
   .game-card {
-    @apply bg-white/5 rounded-lg p-4 hover:bg-white/10 transition-colors;
+    @apply bg-primary-900/40 rounded-lg p-4 hover:bg-primary-900/50 transition-colors;
   }
   
   .game-content {
@@ -97,7 +97,7 @@
   }
   
   .game-name {
-    @apply text-white font-medium text-lg;
+    @apply text-sand-100 font-medium text-lg;
   }
   
   .winner-info {
@@ -105,7 +105,7 @@
   }
   
   .winner-icon {
-    @apply text-yellow-400;
+    @apply text-amber-300;
   }
   
   .winner-name {
@@ -113,17 +113,17 @@
   }
   
   .game-date {
-    @apply text-sm text-white/40 mt-1;
+    @apply text-sm text-sand-100/50 mt-1;
   }
   
   .delete-game-button {
-    @apply text-white/60 hover:text-red-400 p-2 rounded-full 
-      hover:bg-white/10 transition-colors
+    @apply text-sand-100/60 hover:text-red-400 p-2 rounded-full 
+      hover:bg-primary-900/30 transition-colors
       disabled:opacity-50 disabled:cursor-not-allowed;
   }
   
   .empty-state {
-    @apply text-center py-8 text-white/60;
+    @apply text-center py-8 text-sand-100/70;
   }
   
   /* Add smooth scrolling for iOS */
@@ -138,9 +138,9 @@
   }
   
   .delete-confirmation-modal {
-    @apply fixed bg-gray-800 rounded-xl p-6
+    @apply fixed bg-primary-900/80 rounded-xl p-6
       flex flex-col items-center text-center animate-fade-in
-      shadow-xl border border-white/10;
+      shadow-xl border border-primary-300/10;
     /* Make sure modal fits on mobile */
     width: min(90vw, 20rem);
     left: 50%;
@@ -152,15 +152,15 @@
   }
   
   .confirmation-title {
-    @apply text-xl font-semibold text-white mb-2;
+    @apply text-xl font-semibold text-sand-100 mb-2;
   }
   
   .confirmation-text {
-    @apply text-white/80 mb-6;
+    @apply text-sand-100/80 mb-6;
   }
   
   .game-details {
-    @apply block mt-2 font-medium text-white;
+    @apply block mt-2 font-medium text-sand-100;
   }
   
   .confirmation-buttons {
@@ -168,8 +168,8 @@
   }
   
   .cancel-button {
-    @apply flex-1 px-4 py-2 rounded-lg bg-white/10 text-white
-      hover:bg-white/20 transition-colors
+    @apply flex-1 px-4 py-2 rounded-lg bg-primary-900/50 text-sand-100
+      hover:bg-primary-900/60 transition-colors
       disabled:opacity-50 disabled:cursor-not-allowed;
   }
   

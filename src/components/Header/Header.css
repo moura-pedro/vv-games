@@ -1,5 +1,5 @@
 .header {
-    @apply sticky top-0 z-50 bg-white/10 backdrop-blur-lg;
+    @apply sticky top-0 z-50 bg-primary-900/40 backdrop-blur-lg;
   }
   
   .header-content {
@@ -7,9 +7,9 @@
   }
   
   .header-title {
-    @apply text-2xl font-bold text-white;
+    @apply text-xl font-bold text-sand-100;
   }
   
   .header-button {
-    @apply p-2 text-white hover:bg-white/20 rounded-full transition-colors;
+    @apply p-2 text-sand-100/80 hover:bg-primary-800/40 rounded-full transition-colors;
   }

@@ -3,37 +3,42 @@
   @apply max-w-lg mx-auto px-4 py-2;
 }
 
-.session-list {
-  @apply flex gap-2 overflow-x-auto pb-2;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+.dropdown { @apply relative; }
+
+.dropdown-trigger {
+  @apply w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl border backdrop-blur-md transition-all
+    bg-primary-900/40 text-sand-100 border-primary-300/20 hover:bg-primary-800/40 shadow-sm;
 }
 
-.session-list::-webkit-scrollbar {
-  display: none;
+.dropdown-trigger.open { @apply ring-2 ring-sand-300/40; }
+
+.trigger-content { @apply flex items-center gap-2; }
+.trigger-label { @apply font-medium; }
+.trigger-caret { @apply transition-transform; }
+.trigger-caret.rotated { transform: rotate(180deg); }
+
+.dropdown-menu {
+  @apply absolute z-40 mt-2 left-0 right-0 rounded-xl border border-primary-300/20 bg-primary-900/70 backdrop-blur-xl shadow-xl p-1 max-h-72 overflow-auto;
 }
 
-.session-button {
-  @apply flex items-center gap-2 px-4 py-2 rounded-full border backdrop-blur-sm transition-all
-    bg-white/10 text-white border-white/20 hover:bg-white/20;
+.dropdown-item-wrapper { @apply flex items-center justify-between gap-2 relative; }
+
+.dropdown-item {
+  @apply w-full flex items-center justify-between gap-3 px-3 py-2 rounded-lg text-sand-100 hover:bg-primary-800/50 transition-colors;
 }
 
-.session-button.active {
-  @apply bg-white text-purple-600 border-white;
-}
+.dropdown-item.active { @apply bg-sand-300 text-primary-900 font-semibold; }
+
+.item-left { @apply flex items-center gap-2; }
+.item-label { @apply truncate; }
 
 .delete-button {
-  @apply ml-2 text-white/60 hover:text-red-400 transition-colors relative
-    disabled:opacity-50 disabled:cursor-not-allowed p-1 rounded-full hover:bg-white/10;
+  @apply ml-2 text-sand-100/80 hover:text-red-400 transition-colors relative
+    disabled:opacity-50 disabled:cursor-not-allowed p-2 rounded-full hover:bg-primary-900/30;
 }
 
-.delete-button.confirming {
-  @apply text-red-400 animate-pulse;
-}
-
-.active .delete-button {
-  @apply text-purple-400 hover:text-red-400;
-}
+.delete-button.confirming { @apply text-red-400 animate-pulse; }
+.active .delete-button { @apply text-primary-900 hover:text-red-500; }
 
 .delete-confirm {
   @apply absolute left-1/2 -translate-x-1/2 whitespace-nowrap
@@ -41,9 +46,7 @@
     opacity-0 transition-opacity duration-200;
 }
 
-.confirming .delete-confirm {
-  @apply opacity-100;
-}
+.confirming .delete-confirm { @apply opacity-100; }
 
 .new-session-form {
   @apply mt-4;
@@ -54,13 +57,13 @@
 }
 
 .session-input {
-  @apply flex-1 px-4 py-2 rounded-full bg-white/10 text-white placeholder-white/60 
-    border border-white/20 focus:outline-none focus:border-white transition-colors;
+  @apply flex-1 px-4 py-2 rounded-full bg-primary-900/50 text-sand-50 placeholder-sand-100/50 
+    border border-primary-300/20 focus:outline-none focus:border-sand-300 transition-colors;
 }
 
 .submit-button {
-  @apply p-2 bg-white text-purple-600 rounded-full hover:bg-white/90 transition-colors
-    disabled:opacity-50 disabled:cursor-not-allowed;
+  @apply p-2 bg-sand-300 text-primary-900 rounded-full hover:bg-sand-200 transition-colors
+    disabled:opacity-50 disabled:cursor-not-allowed font-bold;
 }
 
 .error-message {

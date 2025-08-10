@@ -1,6 +1,6 @@
 /* src/components/GameTracker/PlayerRankings/PlayerRankings.css */
 .player-rankings {
-  @apply bg-white/10 backdrop-blur-sm rounded-xl p-6 space-y-6;
+  @apply bg-primary-900/50 backdrop-blur-sm rounded-xl p-6 space-y-6;
 }
 
 .rankings-header {
@@ -8,11 +8,11 @@
 }
 
 .header-icon {
-  @apply text-white/80;
+  @apply text-sand-100/90;
 }
 
 .header-title {
-  @apply text-xl font-semibold text-white;
+  @apply text-xl font-semibold text-sand-100;
 }
 
 .error-banner {
@@ -25,7 +25,7 @@
 }
 
 .stats-card {
-  @apply flex items-center gap-3 p-4 rounded-lg bg-white/5 hover:bg-white/10 
+  @apply flex items-center gap-3 p-4 rounded-lg bg-primary-900/40 hover:bg-primary-900/50 
     transition-colors;
 }
 
@@ -38,11 +38,11 @@
 }
 
 .stats-value {
-  @apply text-2xl font-bold text-white;
+  @apply text-2xl font-bold text-sand-100;
 }
 
 .stats-label {
-  @apply text-sm text-white/60;
+  @apply text-sm text-sand-100/70;
 }
 
 .rankings-list {
@@ -50,7 +50,7 @@
 }
 
 .player-card {
-  @apply flex items-center gap-4 p-4 rounded-lg bg-white/5 hover:bg-white/10 
+  @apply flex items-center gap-4 p-4 rounded-lg bg-primary-900/40 hover:bg-primary-900/50 
     transition-all hover:translate-x-1;
 }
 
@@ -59,7 +59,7 @@
 }
 
 .rank-number {
-  @apply text-2xl font-bold text-white/80;
+  @apply text-2xl font-bold text-sand-100/90;
 }
 
 .medal-icon {
@@ -71,7 +71,7 @@
 }
 
 .player-name {
-  @apply text-lg font-semibold text-white mb-1;
+  @apply text-lg font-semibold text-sand-100 mb-1;
 }
 
 .player-stats {
@@ -79,16 +79,16 @@
 }
 
 .stat-item {
-  @apply flex items-center gap-1.5 text-sm text-white/60;
+  @apply flex items-center gap-1.5 text-sm text-sand-100/70;
 }
 
 .form-indicator {
-  @apply px-2 py-0.5 rounded-full text-xs text-white font-medium;
+  @apply px-2 py-0.5 rounded-full text-xs text-primary-900 font-bold bg-sand-300;
 }
 
 .remove-player-button {
-  @apply text-white/40 hover:text-red-400 p-2 rounded-full 
-    hover:bg-white/10 transition-colors relative
+  @apply text-sand-100/40 hover:text-red-400 p-2 rounded-full 
+    hover:bg-primary-900/30 transition-colors relative
     disabled:opacity-50 disabled:cursor-not-allowed;
 }
 
@@ -107,11 +107,11 @@
 }
 
 .empty-rankings {
-  @apply text-center py-8 text-white/60;
+  @apply text-center py-8 text-sand-100/70;
 }
 
 .empty-subtitle {
-  @apply text-sm mt-2 text-white/40;
+  @apply text-sm mt-2 text-sand-100/50;
 }
 
 /* Responsive adjustments */
