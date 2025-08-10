@@ -19,6 +19,12 @@ const GameTracker = () => {
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('rankings');
 
+  const getLatestSessionId = (list) => {
+    if (!list || list.length === 0) return undefined;
+    const sorted = [...list].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    return sorted[0]?.id;
+  };
+
   // Get current session data
   const currentSession = sessions.find(s => s.id === currentSessionId) || sessions[0];
 
@@ -42,15 +48,16 @@ const GameTracker = () => {
           setCurrentSessionId('default');
         } else {
           setSessions(latest);
-          setCurrentSessionId(latest[0].id); // Set to the most recent session
+          setCurrentSessionId(getLatestSessionId(latest));
         }
 
         // Background: fetch all sessions (won't block initial render)
         api.fetchSessions({ sort: '-createdAt' })
           .then((all) => {
-            if (all.length > latest.length) {
-              setSessions(all);
-            }
+            setSessions(all);
+            // Always keep selection on the most recently created session
+            const latestId = getLatestSessionId(all);
+            if (latestId) setCurrentSessionId(latestId);
           })
           .catch(() => { /* ignore background errors to not disrupt UX */ });
 
@@ -62,6 +69,15 @@ const GameTracker = () => {
     };
     fetchSessions();
   }, []);
+
+  // Ensure selection always points to the most recently created session when list changes
+  useEffect(() => {
+    if (sessions.length === 0) return;
+    const latestId = getLatestSessionId(sessions);
+    if (latestId && currentSessionId !== latestId) {
+      setCurrentSessionId(latestId);
+    }
+  }, [sessions]);
 
   if (loading) {
     return (
