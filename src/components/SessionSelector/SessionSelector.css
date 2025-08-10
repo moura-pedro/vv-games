@@ -15,16 +15,16 @@
 
 .session-button {
   @apply flex items-center gap-2 px-4 py-2 rounded-full border backdrop-blur-sm transition-all
-    bg-white/10 text-white border-white/20 hover:bg-white/20;
+    bg-primary-900/30 text-sand-100 border-primary-300/20 hover:bg-primary-800/40;
 }
 
 .session-button.active {
-  @apply bg-white text-purple-600 border-white;
+  @apply bg-sand-300 text-primary-900 border-sand-300 font-bold;
 }
 
 .delete-button {
-  @apply ml-2 text-white/60 hover:text-red-400 transition-colors relative
-    disabled:opacity-50 disabled:cursor-not-allowed p-1 rounded-full hover:bg-white/10;
+  @apply ml-2 text-sand-100/60 hover:text-red-400 transition-colors relative
+    disabled:opacity-50 disabled:cursor-not-allowed p-1 rounded-full hover:bg-primary-900/30;
 }
 
 .delete-button.confirming {
@@ -32,7 +32,7 @@
 }
 
 .active .delete-button {
-  @apply text-purple-400 hover:text-red-400;
+  @apply text-primary-300 hover:text-red-400;
 }
 
 .delete-confirm {
@@ -54,13 +54,13 @@
 }
 
 .session-input {
-  @apply flex-1 px-4 py-2 rounded-full bg-white/10 text-white placeholder-white/60 
-    border border-white/20 focus:outline-none focus:border-white transition-colors;
+  @apply flex-1 px-4 py-2 rounded-full bg-primary-900/30 text-sand-50 placeholder-sand-100/50 
+    border border-primary-300/20 focus:outline-none focus:border-sand-300 transition-colors;
 }
 
 .submit-button {
-  @apply p-2 bg-white text-purple-600 rounded-full hover:bg-white/90 transition-colors
-    disabled:opacity-50 disabled:cursor-not-allowed;
+  @apply p-2 bg-sand-300 text-primary-900 rounded-full hover:bg-sand-200 transition-colors
+    disabled:opacity-50 disabled:cursor-not-allowed font-bold;
 }
 
 .error-message {

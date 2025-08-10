@@ -1,10 +1,10 @@
 .game-tracker {
   min-height: 100vh;
-  background: linear-gradient(to bottom, #6b21a8, #3730a3);
+  background: linear-gradient(to bottom, #004a94, #00366f);
 }
 
 .loading-screen {
-  @apply flex justify-center items-center min-h-screen bg-gradient-to-b from-purple-700 to-indigo-800;
+  @apply flex justify-center items-center min-h-screen bg-gradient-to-b from-primary-700 to-primary-900;
 }
 
 .error-screen {

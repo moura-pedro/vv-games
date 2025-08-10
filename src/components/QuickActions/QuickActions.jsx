@@ -9,14 +9,14 @@ const QuickActions = ({ setActiveTab }) => {
       title: 'Adicionar Jogador',
       description: 'Entrar no jogo',
       icon: <PlusCircle size={24} />,
-      gradient: 'from-green-400 to-green-500'
+gradient: 'from-sand-300 to-sand-400'
     },
     {
       id: 'record',
       title: 'Registrar Vitória',
       description: 'Pontuar um jogador',
       icon: <Trophy size={24} />,
-      gradient: 'from-blue-400 to-blue-500'
+gradient: 'from-primary-500 to-primary-400'
     }
   ];
 
@@ -26,7 +26,7 @@ const QuickActions = ({ setActiveTab }) => {
         <button
           key={action.id}
           onClick={() => setActiveTab(action.id)}
-          className={`action-button bg-gradient-to-br ${action.gradient}`}
+          className={`action-button bg-gradient-to-br ${action.gradient} ${action.id === 'add' ? 'text-primary-900' : 'text-sand-50'}`}
         >
           <div className="action-icon">{action.icon}</div>
           <div className="action-content">
