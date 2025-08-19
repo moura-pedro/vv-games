@@ -19,10 +19,23 @@ const GameTracker = () => {
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('rankings');
 
+  const LOCAL_STORAGE_KEY = 'vv_currentSessionId';
+
   const getLatestSessionId = (list) => {
     if (!list || list.length === 0) return undefined;
     const sorted = [...list].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     return sorted[0]?.id;
+  };
+
+  const handleSetCurrentSessionId = (nextId) => {
+    setCurrentSessionId(nextId);
+    try {
+      if (nextId) {
+        localStorage.setItem(LOCAL_STORAGE_KEY, nextId);
+      }
+    } catch (_) {
+      // ignore storage errors (e.g., private mode)
+    }
   };
 
   // Get current session data
@@ -45,19 +58,31 @@ const GameTracker = () => {
           };
           await api.createSession(defaultSession);
           setSessions([defaultSession]);
-          setCurrentSessionId('default');
+          handleSetCurrentSessionId('default');
         } else {
           setSessions(latest);
-          setCurrentSessionId(getLatestSessionId(latest));
+          // Prefer previously selected session if available
+          const storedId = (() => { try { return localStorage.getItem(LOCAL_STORAGE_KEY); } catch { return null; } })();
+          if (storedId) {
+            handleSetCurrentSessionId(storedId);
+          } else {
+            handleSetCurrentSessionId(getLatestSessionId(latest));
+          }
         }
 
         // Background: fetch all sessions (won't block initial render)
         api.fetchSessions({ sort: '-createdAt' })
           .then((all) => {
             setSessions(all);
-            // Always keep selection on the most recently created session
-            const latestId = getLatestSessionId(all);
-            if (latestId) setCurrentSessionId(latestId);
+            // Keep current selection unless it's missing; then fallback
+            const storedId = (() => { try { return localStorage.getItem(LOCAL_STORAGE_KEY); } catch { return null; } })();
+            const currentExists = all.some(s => s.id === currentSessionId);
+            if (!currentExists) {
+              const fallbackId = (storedId && all.some(s => s.id === storedId))
+                ? storedId
+                : getLatestSessionId(all);
+              if (fallbackId) handleSetCurrentSessionId(fallbackId);
+            }
           })
           .catch(() => { /* ignore background errors to not disrupt UX */ });
 
@@ -69,15 +94,6 @@ const GameTracker = () => {
     };
     fetchSessions();
   }, []);
-
-  // Ensure selection always points to the most recently created session when list changes
-  useEffect(() => {
-    if (sessions.length === 0) return;
-    const latestId = getLatestSessionId(sessions);
-    if (latestId && currentSessionId !== latestId) {
-      setCurrentSessionId(latestId);
-    }
-  }, [sessions]);
 
   if (loading) {
     return (
